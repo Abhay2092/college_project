@@ -9,7 +9,9 @@ const CaseManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCase, setSelectedCase] = useState(null);
 
-  const fileInputRef = useRef(null); // file input reference
+  const fileInputRef = useRef(null);
+
+  const [uploadMessage, setUploadMessage] = useState("");   // ⭐ NEW
 
   // 🔹 Handle uploading actual file name
   const handleFileSelect = (event, caseId) => {
@@ -29,6 +31,9 @@ const CaseManagement = () => {
     if (selectedCase && selectedCase.id === caseId) {
       setSelectedCase({ ...selectedCase, documents: [...selectedCase.documents, newDoc] });
     }
+
+    setUploadMessage(`📁 "${file.name}" uploaded successfully!`);   // ⭐ NEW
+    setTimeout(() => setUploadMessage(""), 3000);                  // ⭐ NEW
   };
 
   // 🔹 Update status
@@ -70,7 +75,7 @@ const CaseManagement = () => {
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-64"
             />
           </div>
-          
+
           {user.role === 'Admin' && (
             <button className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
               <Plus size={18} />
@@ -81,7 +86,7 @@ const CaseManagement = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Case List */}
         <div className="lg:col-span-1 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[calc(100vh-12rem)]">
           <div className="p-4 border-b border-gray-100 bg-gray-50">
@@ -127,22 +132,16 @@ const CaseManagement = () => {
                   <h3 className="text-xl font-bold text-gray-800 mb-1">{selectedCase.title}</h3>
                   <p className="text-sm text-gray-500">Case ID: {selectedCase.id}</p>
                 </div>
-
-                {/* Status Dropdown */}
-                {(user.role === 'Judge' || user.role === 'Admin') && (
-                  <select
-                    value={selectedCase.status}
-                    onChange={(e) => handleStatusUpdate(selectedCase.id, e.target.value)}
-                    className="text-sm border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                  >
-                    <option value="Active">Active</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Closed">Closed</option>
-                  </select>
-                )}
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-8">
+
+                {/* ⭐ Upload Success Message */}
+                {uploadMessage && (
+                  <p className="text-sm text-green-600 font-semibold bg-green-50 p-2 rounded">
+                    {uploadMessage}
+                  </p>
+                )}
 
                 {/* Documents */}
                 <section>
@@ -181,9 +180,6 @@ const CaseManagement = () => {
                         <button className="text-indigo-600 hover:text-indigo-800 text-xs font-medium">View</button>
                       </div>
                     ))}
-                    {selectedCase.documents.length === 0 && (
-                      <p className="text-sm text-gray-400 italic">No documents attached.</p>
-                    )}
                   </div>
                 </section>
               </div>
