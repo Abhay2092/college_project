@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import CaseManagement from './pages/CaseManagement';
 import UserManagement from './pages/UserManagement';
+import NewCase from "./pages/NewCase";
 
 const RequireAuth = ({ children }) => {
   const { user, loading } = useAuth();
@@ -27,17 +28,29 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
+
+          {/* Public Route */}
           <Route path="/login" element={<Login />} />
-          
-          <Route path="/" element={
-            <RequireAuth>
-              <Layout />
-            </RequireAuth>
-          }>
+
+          {/* Protected Routes with Layout */}
+          <Route 
+            path="/" 
+            element={
+              <RequireAuth>
+                <Layout />
+              </RequireAuth>
+            }
+          >
             <Route index element={<Dashboard />} />
+
+            {/* CASE ROUTES */}
             <Route path="cases" element={<CaseManagement />} />
+            <Route path="cases/new" element={<NewCase />} />   {/* <-- FIXED PLACE */}
+
+            {/* USERS ROUTE */}
             <Route path="users" element={<UserManagement />} />
           </Route>
+
         </Routes>
       </AuthProvider>
     </Router>
